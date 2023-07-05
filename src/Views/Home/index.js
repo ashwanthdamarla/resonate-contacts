@@ -10,6 +10,7 @@ export default function Home(props) {
   const {
     contacts,
     error,
+    favourites,
     loading,
     searchText,
     selectedContact,
@@ -17,6 +18,7 @@ export default function Home(props) {
     reloadContacts,
     searchContacts,
     setSelectedContact,
+    toggleFavourite,
   } = useAPIContacts();
 
   return (
@@ -24,6 +26,7 @@ export default function Home(props) {
       value={{
         contacts,
         error,
+        favourites,
         loading,
         searchText,
         selectedContact,
@@ -31,6 +34,7 @@ export default function Home(props) {
         reloadContacts,
         searchContacts,
         setSelectedContact,
+        toggleFavourite,
       }}
     >
       <NavBar />

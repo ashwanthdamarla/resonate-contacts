@@ -17,6 +17,7 @@ function useAPIContacts() {
   const [error, setError] = useState(undefined);
   const [searchText, setSearchText] = useState("");
   const [selectedContact, setSelectedContact] = useState(undefined);
+  const [favourites, setFavourites] = useState([]);
 
   const clearSearch = () => {
     setContacts(
@@ -84,6 +85,16 @@ function useAPIContacts() {
     );
   };
 
+  const toggleFavourite = () => {
+    if (selectedContact !== undefined) {
+      if (favourites.some((e) => e.id === selectedContact.id)) {
+        setFavourites((pre) => pre.filter((e) => e.id !== selectedContact.id));
+      } else {
+        setFavourites((pre) => [...pre, selectedContact]);
+      }
+    }
+  };
+
   useEffect(() => {
     fetchData();
   }, []);
@@ -91,6 +102,7 @@ function useAPIContacts() {
   return {
     contacts,
     error,
+    favourites,
     loading,
     searchText,
     selectedContact,
@@ -98,6 +110,7 @@ function useAPIContacts() {
     reloadContacts,
     searchContacts,
     setSelectedContact,
+    toggleFavourite,
   };
 }
 

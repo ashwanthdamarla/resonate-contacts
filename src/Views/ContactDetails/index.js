@@ -3,6 +3,8 @@ import {
   CardContent,
   CardHeader,
   Divider,
+  Grid,
+  IconButton,
   Link,
   Typography,
 } from "@mui/material";
@@ -12,32 +14,65 @@ import PublicIcon from "@mui/icons-material/Public";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import { ContactsContext } from "Context";
 import ContactListImage from "UI/ContactListImage";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
+import { Star, StarBorder } from "@mui/icons-material";
+
+import "index.css";
 
 export default function ContactDetails(props) {
-  const { selectedContact } = useContext(ContactsContext);
+  const { selectedContact, favourites, toggleFavourite } =
+    useContext(ContactsContext);
+  const [isFavourite, setIsFavourite] = useState(false);
+
+  useEffect(() => {
+    if (favourites?.length >= 0) {
+      setIsFavourite(favourites.some((e) => e.id === selectedContact.id));
+    }
+  }, [favourites, selectedContact]);
+
   return (
     <div style={{ padding: 20, marginLeft: 10 }}>
-      <div style={{ display: "flex", flexDirection: "row" }}>
-        <ContactListImage size="large" />
-        <div
-          style={{
-            alignItems: "center",
-            verticalAlign: "center",
-            marginLeft: 20,
-          }}
-        >
-          <Typography variant="h5">
-            {selectedContact.name} ({selectedContact.username})
-          </Typography>
-          <Typography variant="subtitle2">
-            {selectedContact.company.name}
-          </Typography>
-          <Typography variant="subtitle2">
-            {selectedContact.company.catchPhrase}
-          </Typography>
-        </div>
-      </div>
+      <Grid container>
+        <Grid item xs={8}>
+          <div style={{ display: "flex", flexDirection: "row" }}>
+            <ContactListImage size="large" />
+            <div
+              style={{
+                alignItems: "center",
+                verticalAlign: "center",
+                marginLeft: 20,
+              }}
+            >
+              <Typography variant="h5">
+                {selectedContact.name} ({selectedContact.username})
+              </Typography>
+              <Typography variant="subtitle2">
+                {selectedContact.company.name}
+              </Typography>
+              <Typography variant="subtitle2">
+                {selectedContact.company.catchPhrase}
+              </Typography>
+            </div>
+          </div>
+        </Grid>
+        <Grid item xs={4}>
+          <div
+            style={{
+              display: "flex",
+              width: "100%",
+              justifyContent: "flex-end",
+            }}
+          >
+            <IconButton onClick={() => toggleFavourite()}>
+              {isFavourite ? (
+                <Star style={{ color: "#FFD700" }} />
+              ) : (
+                <StarBorder />
+              )}
+            </IconButton>
+          </div>
+        </Grid>
+      </Grid>
       <br />
       <Divider />
       <br />
