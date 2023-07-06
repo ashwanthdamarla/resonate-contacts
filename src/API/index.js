@@ -10,6 +10,18 @@ function sortAlphabetically(a, b) {
   return 0;
 }
 
+function groupByFirstChar(arr) {
+  return arr.reduce((acc, e) => {
+    return {
+      ...acc,
+      [String(e?.name?.[0]).toUpperCase()]: [
+        ...(arr?.[String(e?.name?.[0]).toUpperCase()] ?? []),
+        e,
+      ],
+    };
+  }, {});
+}
+
 function useAPIContacts() {
   const [baseContacts, setBaseContacts] = useState(undefined);
   const [contacts, setContacts] = useState(undefined);
@@ -21,9 +33,8 @@ function useAPIContacts() {
 
   const clearSearch = () => {
     setContacts(
-      baseContacts
-        .sort((a, b) => sortAlphabetically(a, b))
-        .group((e) => String(e.name).toUpperCase()?.[0])
+      groupByFirstChar(baseContacts.sort((a, b) => sortAlphabetically(a, b)))
+      // .group((e) => String(e.name).toUpperCase()?.[0])
     );
 
     setSearchText("");
@@ -40,9 +51,8 @@ function useAPIContacts() {
       const jsonData = await response.json();
       setBaseContacts(jsonData);
       setContacts(
-        jsonData
-          .sort((a, b) => sortAlphabetically(a, b))
-          .group((e) => String(e.name).toUpperCase()?.[0])
+        groupByFirstChar(jsonData.sort((a, b) => sortAlphabetically(a, b)))
+        // .group((e) => String(e.name).toUpperCase()?.[0])
       );
       setLoading(false);
     } catch (error) {
@@ -62,26 +72,28 @@ function useAPIContacts() {
     setSearchText(pSearchText);
 
     setContacts(
-      baseContacts
-        .filter((e) => {
-          if (pSearchText.length > 1) {
-            return (
-              String(e.name).toLowerCase().includes(pSearchText) ||
-              String(e.phone).toLowerCase().includes(pSearchText) ||
-              String(e.email).toLowerCase().includes(pSearchText)
-            );
-          }
-          if (pSearchText.length === 1) {
-            return (
-              String(e.name).toLowerCase().startsWith(pSearchText) ||
-              String(e.phone).toLowerCase().startsWith(pSearchText) ||
-              String(e.email).toLowerCase().startsWith(pSearchText)
-            );
-          }
-          return e;
-        })
-        .sort((a, b) => sortAlphabetically(a, b))
-        .group((e) => String(e.name).toUpperCase()?.[0])
+      groupByFirstChar(
+        baseContacts
+          .filter((e) => {
+            if (pSearchText.length > 1) {
+              return (
+                String(e.name).toLowerCase().includes(pSearchText) ||
+                String(e.phone).toLowerCase().includes(pSearchText) ||
+                String(e.email).toLowerCase().includes(pSearchText)
+              );
+            }
+            if (pSearchText.length === 1) {
+              return (
+                String(e.name).toLowerCase().startsWith(pSearchText) ||
+                String(e.phone).toLowerCase().startsWith(pSearchText) ||
+                String(e.email).toLowerCase().startsWith(pSearchText)
+              );
+            }
+            return e;
+          })
+          .sort((a, b) => sortAlphabetically(a, b))
+      )
+      // .group((e) => String(e.name).toUpperCase()?.[0])
     );
   };
 
